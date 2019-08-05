@@ -1,0 +1,42 @@
+version: "3"
+services:
+  reverseproxy:
+      image: krasserp/reverseproxy
+      ports:
+          - 8080:8080
+      restart: always
+      depends_on:
+        - backend-user
+        - backend-feed     
+  backend-user:
+    image: krasserp/udacity-restapi-user
+    volumes:
+      - $HOME/.aws:/root/.aws
+    environment:
+      UG_POSTGRESS_USERNAME: $UG_POSTGRESS_USERNAME
+      UG_POSTGRESS_PASSWORD: $UG_POSTGRESS_PASSWORD 
+      UG_POSTGRESS_DATABASE: $UG_POSTGRESS_DATABASE
+      UG_POSTGRESS_HOST: $UG_POSTGRESS_HOST 
+      UG_AWS_REGION: $UG_AWS_REGION 
+      UG_AWS_PROFILE: $UG_AWS_PROFILE 
+      UG_AWS_MEDIA_BUCKET: $UG_AWS_MEDIA_BUCKET
+      UG_JWT_SECRET: $UG_JWT_SECRET
+      URL: "http://localhost:8100"
+  backend-feed:
+    image: krasserp/udacity-restapi-feed
+    volumes:
+      - $HOME/.aws:/root/.aws
+    environment:
+      UG_POSTGRESS_USERNAME: $UG_POSTGRESS_USERNAME
+      UG_POSTGRESS_PASSWORD: $UG_POSTGRESS_PASSWORD 
+      UG_POSTGRESS_DATABASE: $UG_POSTGRESS_DB 
+      UG_POSTGRESS_HOST: $UG_POSTGRESS_HOST 
+      UG_AWS_REGION: $UG_AWS_REGION 
+      UG_AWS_PROFILE: $UG_AWS_PROFILE 
+      UG_AWS_MEDIA_BUCKET: $UG_AWS_MEDIA_BUCKET
+      UG_JWT_SECRET: $UG_JWT_SECRET
+      URL: "http://localhost:8100"
+  frontend:
+    image: krasserp/udacity-frontend:local
+    ports:
+      - "8100:80"
