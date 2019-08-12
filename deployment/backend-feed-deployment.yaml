@@ -1,0 +1,79 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    service: backend-feed
+  name: backend-feed
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        service: backend-feed
+    spec:
+      containers:
+      - image: krasserp/udacity-restapi-feed
+        name: backend-feed
+        imagePullPolicy: Always  
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"                  
+        env:
+        - name: URL
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: URL
+        - name: UG_AWS_BUCKET
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UG_AWS_BUCKET
+        - name: UG_AWS_PROFILE
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UG_AWS_PROFILE
+        - name: UG_AWS_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UG_AWS_REGION
+        - name: UG_JWT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UG_JWT_SECRET
+        - name: UG_POSTGRESS_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UG_POSTGRESS_DATABASE
+        - name: UG_POSTGRESS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UG_POSTGRESS_HOST
+        - name: UG_POSTGRESS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: env-secret
+              key: UG_POSTGRESS_PASSWORD
+        - name: UG_POSTGRESS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: env-secret
+              key: UG_POSTGRESS_USERNAME      
+        volumeMounts:
+        - name: aws-secret
+          mountPath: "/root/.aws/"
+          readOnly: true        
+      restartPolicy: Always
+      volumes:
+      - name: aws-secret
+        secret:
+          secretName: aws-secret       
