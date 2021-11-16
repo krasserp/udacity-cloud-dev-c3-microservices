@@ -17,7 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/jsonwebtoken": "^8.3.2",
-    "aws-sdk": "^2.429.0",
+    "aws-sdk": "^2.814.0",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.18.3",
     "email-validator": "^2.0.4",
